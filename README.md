@@ -3,10 +3,16 @@
 Unoffical TrueMoney Wallet API Class for PHP.
 
 ```php
-// Login with Credentials.
+// Login with Credentials. (You will need OTP for the first time.)
 $tw = new TrueWallet($username, $password);
 print_r($tw->RequestLoginOTP());
 print_r($tw->SubmitLoginOTP($otp_code, $mobile_number, $otp_reference));
+print_r($tw->access_token); // Access Token
+print_r($tw->reference_token); // Reference Token
+
+// Login with Credentials and Reference Token.
+$tw = new TrueWallet($username, $password, $reference_token);
+print_r($tw->Login());
 print_r($tw->access_token); // Access Token
 
 // Login with Access Token.
@@ -46,50 +52,59 @@ require_once("TrueWallet.class.php");
 
 ## Initialization
 
-Simple initialization with Login Credentials/Access Token.
+Simple initialization with Login Credentials/Login Credentials + Reference Token/Access Token.
 
 ```php
-$tw = new TrueWallet("[USERNAME]", "[PASSWORD]"); // Login Credentials
-$tw = new TrueWallet("[ACCESS_TOKEN]"); // Access Token
+$tw = new TrueWallet($username, $password); // Login Credentials
+$tw = new TrueWallet($username, $password, $reference_token); // Login Credentials + Reference Token
+$tw = new TrueWallet($access_token); // Access Token
 
 ```
 ## Functions
 
-### [function setCredentials ($username, $password, $type = null)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L55-L61)
+### [function setCredentials ($username, $password, $reference_token = null, $type = null)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L56-L63)
 
 You can set Login Credentials with this function.
 
 Email or Mobile Number can be used as Username. PIN can be used as Password as well.
 
-### [function setAccessToken ($access_token)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L63-L65)
+### [function setAccessToken ($access_token)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L65-L67)
 
 You can set Access Token with this function.
 
-### [function RequestLoginOTP ()](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L100-L117)
+### [function setReferenceToken ($reference_token)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L69-L71)
+
+You can set Reference Token with this function.
+
+### [function RequestLoginOTP ()](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L106-L123)
 
 You can request for Login OTP with this function, Login Credentials are required.
 
-### [function SubmitLoginOTP ($otp_code, $mobile_number = null, $otp_reference = null)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L119-L139)
+### [function SubmitLoginOTP ($otp_code, $mobile_number = null, $otp_reference = null)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L125-L146)
 
 You can submit Login OTP with this function, $mobile_number and $otp_reference parameters are required.
 
-### [function GetProfile ()](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L141-L144)
+### [function Login ()](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L148-L164)
+
+You can login without OTP with this function, Login Credentials and Reference Token are required.
+
+### [function GetProfile ()](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L166-L169)
 
 You can get your Profile information with this function.
 
-### [function GetBalance ()](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L146-L149)
+### [function GetBalance ()](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L171-L174)
 
 You can get your current wallet balance with this function.
 
-### [function GetTransaction ($limit = 50, $start_date = null, $end_date = null)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L151-L159)
+### [function GetTransaction ($limit = 50, $start_date = null, $end_date = null)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L176-L184)
 
 You can fetch your transaction(s) with this function, $start_date and $end_date parameters are needed to be "Y-m-d" format.
 
-### [function GetTransactionReport ($report_id)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L161-L166)
+### [function GetTransactionReport ($report_id)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L186-L191)
 
 You can fetch your transaction report with this function, $report_id parameter is required.
 
-### [function TopupCashcard ($cashcard)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L168-L171)
+### [function TopupCashcard ($cashcard)](https://github.com/likecyber/php-truewallet-class/blob/master/TrueWallet.class.php#L193-L196)
 
 You can topup your wallet balance with this function, $cashcard parameter is required.
 
@@ -102,6 +117,7 @@ These variables can be used if you need them.
 - (int) $this->http_code : HTTP Code from Curl execution.
 
 - (string) $this->access_token : You can take Access Token from this variable.
+- (string) $this->reference_token : You can take Reference Token from this variable.
 
 - (array) $this->curl_options : Allow you to set extra Curl Options. (You can modify this variable.)
 - (int) $this->device_id : Allow you to change device_id parameter. (You can modify this variable.)
