@@ -9,12 +9,13 @@
  * @copyright Copyright (c) 2018-2019
  * @license   https://creativecommons.org/licenses/by/4.0/ Attribution 4.0 International (CC BY 4.0)
  * @link      https://github.com/likecyber/php-truewallet-api
- * @version   1.0.0
+ * @version   1.1.0
 **/
 
 class TrueWallet {
 	public $credentials = array();
 	public $access_token = null;
+	public $reference_token = null;
 
 	public $curl_options = null;
 
@@ -24,11 +25,11 @@ class TrueWallet {
 	public $response = null;
 	public $http_code = null;
 
-	private $mobile_api_gateway = "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/";
-	private $secret_key = "9LXAVCxcITaABNK48pAVgc4muuTNJ4enIKS5YzKyGZ";
+	public $mobile_api_gateway = "https://mobile-api-gateway.truemoney.com/mobile-api-gateway/";
+	public $secret_key = "9LXAVCxcITaABNK48pAVgc4muuTNJ4enIKS5YzKyGZ";
 
-	private $device_id = ""; // Set device_id here
-	private $mobile_tracking = ""; // Set mobile_tracking here
+	public $device_id = ""; // Set device_id here
+	public $mobile_tracking = ""; // Set mobile_tracking here
 
 	public function generate_identity () {
 		$this->mobile_tracking = base64_encode(openssl_random_pseudo_bytes(40));
@@ -36,7 +37,7 @@ class TrueWallet {
 		return implode(array($this->device_id, $this->mobile_tracking), "|");
 	}
 
-	public function __construct ($username = null, $password = null) {
+	public function __construct ($username = null, $password = null, $reference_token = null) {
 		if (empty($this->device_id) || empty($this->mobile_tracking)) {
 			$identity_file = dirname(__FILE__)."/".basename(__FILE__, ".php").".identity";
 			if (file_exists($identity_file)) {
@@ -46,22 +47,27 @@ class TrueWallet {
 			}
 		}
 		if (!is_null($username) && !is_null($password)) {
-			$this->setCredentials($username, $password);
+			$this->setCredentials($username, $password, $reference_token);
 		} elseif (!is_null($username)) {
 			$this->setAccessToken($username);
 		}
 	}
 
-	public function setCredentials ($username, $password, $type = null) {
+	public function setCredentials ($username, $password, $reference_token = null, $type = null) {
 		if (is_null($type)) $type = filter_var($username, FILTER_VALIDATE_EMAIL) ? "email" : "mobile";
 		$this->credentials["username"] = $username;
 		$this->credentials["password"] = $password;
 		$this->credentials["type"] = $type;
 		$this->access_token = null;
+		$this->reference_token =  $reference_token;
 	}
 
 	public function setAccessToken ($access_token) {
 		$this->access_token = $access_token;
+	}
+
+	public function setReferenceToken ($reference_token) {
+		$this->reference_token = $reference_token;
 	}
 
 	public function request ($api_path, $headers = array(), $data = null) {
@@ -133,6 +139,25 @@ class TrueWallet {
 			"mobile_tracking" => $this->mobile_tracking,
 			"timestamp" => $timestamp,
 			"signature" => hash_hmac("sha1", implode(array($this->credentials["type"], $otp_code, $mobile_number, $otp_reference, $this->device_id, $this->mobile_tracking, $timestamp), "|"), $this->secret_key)
+		));
+		if (isset($result["data"]["access_token"])) $this->setAccessToken($result["data"]["access_token"]);
+		if (isset($result["data"]["reference_token"])) $this->setReferenceToken($result["data"]["reference_token"]);
+		return $result;
+	}
+
+	public function Login () {
+		if (!isset($this->credentials["username"]) || !isset($this->credentials["password"]) || !isset($this->credentials["type"]) || is_null($this->reference_token)) return false;
+		$timestamp = $this->getTimestamp();
+		$result = $this->request("/api/v1/login/", array(
+			"username" => $this->credentials["username"],
+			"password" => sha1($this->credentials["username"].$this->credentials["password"])
+		), array(
+			"type" => $this->credentials["type"],
+			"reference_token" => $this->reference_token,
+			"device_id" => $this->device_id,
+			"mobile_tracking" => $this->mobile_tracking,
+			"timestamp" => $timestamp,
+			"signature" => hash_hmac("sha1", implode(array($this->credentials["type"], $this->reference_token, $this->device_id, $this->mobile_tracking, $timestamp), "|"), $this->secret_key)
 		));
 		if (isset($result["data"]["access_token"])) $this->setAccessToken($result["data"]["access_token"]);
 		return $result;
