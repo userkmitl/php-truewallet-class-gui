@@ -98,7 +98,7 @@ class TrueWallet {
 	}
 
 	public function RequestLoginOTP () {
-		if (!isset($this->credentials["username"]) || !isset($this->credentials["username"]) || !isset($this->credentials["type"])) return false;
+		if (!isset($this->credentials["username"]) || !isset($this->credentials["password"]) || !isset($this->credentials["type"])) return false;
 		$timestamp = $this->getTimestamp();
 		$result = $this->request("/api/v1/login/otp/", array(
 			"username" => $this->credentials["username"],
