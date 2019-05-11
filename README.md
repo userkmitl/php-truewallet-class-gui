@@ -11,6 +11,12 @@ The hardest part for Developer is laziness, sometime laziness made innovation, n
 4. Type your Email and Password which has been registered to TrueWallet.
 5. Follow the suggestion until done.
 
-### Future Feature
+### Current Feature
+0. OTP GUI Confirmation.
+1. Get Access Token.
+2. Get Reference Token.
+3. Get Timestamp.
 
+### Future Feature
+1. Get user basic information.
 
