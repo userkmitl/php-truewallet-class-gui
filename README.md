@@ -1,3 +1,3 @@
-# Better GUI for Getting TrueWallet Access Token and Profiles
+# GUI for Getting TrueWallet Access Token and Profiles
 
 
