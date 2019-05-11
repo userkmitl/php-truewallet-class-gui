@@ -23,5 +23,5 @@ The hardest part for Developer is laziness, sometimes laziness made innovation, 
 
 
 ## Licenses
-
+This work is in Beta version No. 0.1b
 This work is licensed under a Creative Commons Attribution 4.0 International License.
