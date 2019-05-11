@@ -19,3 +19,4 @@ The hardest part for Developer is laziness, sometimes laziness made innovation, 
 
 ### Future Feature
 1. Get user basic information.
+2. Loging in with Token.
