@@ -87,9 +87,9 @@ if(!isset($_GET['getotp'])){ ?>
     unset($_SESSION['username']);
 } ?>
 </div>
-<div class="col-3"></div>
-<div class="col-3"></div>
-</div>
-</div>
+	<div class="col-3"></div>
+	<div class="col-3"></div>
+	</div>
+	</div>
 </body>
 </html>
