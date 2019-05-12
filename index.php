@@ -11,11 +11,9 @@
 <?php
 session_start();
 require_once("TrueWallet.class.php");
-
 if(isset($_SESSION['username']) and (isset($_SESSION['password']))){
     $tw = new TrueWallet($_SESSION['username'], $_SESSION['password']);    
 }
-
 if(!isset($_GET['getotp'])){ ?>
     <form action="?getotp=1" method="post">
         <h3 class="text-center mt-3 mb-5">Verify your TrueWallet Account</h3>
@@ -35,7 +33,6 @@ if(!isset($_GET['getotp'])){ ?>
     $tw = new TrueWallet($_SESSION['username'], $_SESSION['password']);    
     $request = $tw->RequestLoginOTP();
     header('location:?sentotp=1&getotp=1&mobile_number='.$request['data']['mobile_number'].'&otp_ref='.$request['data']['otp_reference']);
-
 } else if(isset($_GET['sentotp'])) { ?>
 
     <form action="?getprofile=1&getotp=1&mobile_number=<?=$_GET['mobile_number']?>&otp_ref=<?=$_GET['otp_ref']?>" method="post"> 
@@ -48,7 +45,6 @@ if(!isset($_GET['getotp'])){ ?>
 	</form>
 	
 <?php 
-
 } else if (isset($_GET['getprofile'])){ 
     
     $tw->SubmitLoginOTP($_POST['otp_code'], $_GET['mobile_number'], $_GET['otp_ref']);
@@ -64,7 +60,9 @@ if(!isset($_GET['getotp'])){ ?>
                         ACCESS TOKEN :
                     </div>
                     <div class="col-8 text-left">
-                        &emsp;<?=$_SESSION['username']['access_token']=$tw->access_token?>
+                        <?php $_SESSION['username']['access_token']=$tw->access_token;
+                        echo $_SESSION['username']['access_token'];
+                        ?>
                     </div>
                 </div>
                 <div class="row">
@@ -72,7 +70,8 @@ if(!isset($_GET['getotp'])){ ?>
                         REFERENCE TOKEN :
                     </div>
                     <div class="col-8 text-left">
-                        &emsp;<?=$_SESSION['username']['reference_token']=$tw->reference_token?>
+                        <?php $_SESSION['username']['reference_token']=$tw->reference_token;
+                        echo $_SESSION['username']['reference_token']?>
                     </div>
                 </div>
                 <div class="row">
@@ -84,7 +83,7 @@ if(!isset($_GET['getotp'])){ ?>
 <?php
     session_write_close();
     unset($_SESSION['username']);
-    unset($_SESSION['username']);
+    unset($_SESSION['password']);
 } ?>
 </div>
 	<div class="col-3"></div>
