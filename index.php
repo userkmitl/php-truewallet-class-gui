@@ -64,7 +64,7 @@ if(!isset($_GET['getotp'])){ ?>
                         ACCESS TOKEN :
                     </div>
                     <div class="col-8 text-left">
-                        &emsp;<?=$_SESSION['access_token'].$tw->access_token?>
+                        &emsp;<?=$_SESSION['username']['access_token'].$tw->access_token?>
                     </div>
                 </div>
                 <div class="row">
@@ -72,7 +72,7 @@ if(!isset($_GET['getotp'])){ ?>
                         REFERENCE TOKEN :
                     </div>
                     <div class="col-8 text-left">
-                        &emsp;<?=$_SESSION['reference_token'].$tw->reference_token?>
+                        &emsp;<?=$_SESSION['username']['reference_token'].$tw->reference_token?>
                     </div>
                 </div>
                 <div class="row">
