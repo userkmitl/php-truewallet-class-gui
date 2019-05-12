@@ -30,7 +30,6 @@ if(!isset($_GET['getotp'])){ ?>
     if(!isset($_SESSION['username'])){
         $_SESSION['username'] = $_POST['username'];
         $_SESSION['password'] = $_POST['password'];
-        session_write_close();
     } 
     
     $tw = new TrueWallet($_SESSION['username'], $_SESSION['password']);    
@@ -65,7 +64,7 @@ if(!isset($_GET['getotp'])){ ?>
                         ACCESS TOKEN :
                     </div>
                     <div class="col-8 text-left">
-                        &emsp;<?=$tw->access_token?>
+                        &emsp;<?=$_SESSION['access_token'].$tw->access_token?>
                     </div>
                 </div>
                 <div class="row">
@@ -73,7 +72,7 @@ if(!isset($_GET['getotp'])){ ?>
                         REFERENCE TOKEN :
                     </div>
                     <div class="col-8 text-left">
-                        &emsp;<?=$tw->reference_token?>
+                        &emsp;<?=$_SESSION['reference_token'].$tw->reference_token?>
                     </div>
                 </div>
                 <div class="row">
@@ -83,6 +82,7 @@ if(!isset($_GET['getotp'])){ ?>
                 </div>
             </div>
 <?php
+    session_write_close();
     unset($_SESSION['username']);
     unset($_SESSION['username']);
 } ?>
